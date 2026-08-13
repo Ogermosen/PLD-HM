@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#5b0b86">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="PLD-HM">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon-512.png">
+  <title>PLD-HM</title>
+  <style>
+    html,body { margin:0; width:100%; height:100%; background:#5b0b86; }
+    body { display:flex; align-items:center; justify-content:center; font-family:Arial,sans-serif; }
+    .box { text-align:center; color:white; }
+    img { width:180px; height:180px; object-fit:contain; border-radius:28px; }
+    p { margin-top:14px; font-size:18px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <img src="icon-512.png" alt="PLD-HM">
+    <p>Abriendo PLD-HM…</p>
+  </div>
+  <script>
+    const FORM_URL = "https://forms.gle/TrvjpJDbZHj51Xpy9";
+    setTimeout(() => { window.location.replace(FORM_URL); }, 400);
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    }
+  </script>
+</body>
+</html>
