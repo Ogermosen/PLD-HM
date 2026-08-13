@@ -1,34 +1,196 @@
+```html
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
   <meta name="theme-color" content="#5b0b86">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="PLD-HM">
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="icon-512.png">
+
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon-512.png">
+
   <title>PLD-HM</title>
+
   <style>
-    html,body { margin:0; width:100%; height:100%; background:#5b0b86; }
-    body { display:flex; align-items:center; justify-content:center; font-family:Arial,sans-serif; }
-    .box { text-align:center; color:white; }
-    img { width:180px; height:180px; object-fit:contain; border-radius:28px; }
-    p { margin-top:14px; font-size:18px; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #5b0b86;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: white;
+    }
+
+    .box {
+      width: 90%;
+      max-width: 380px;
+      text-align: center;
+    }
+
+    img {
+      width: 180px;
+      height: 180px;
+      object-fit: contain;
+      border-radius: 28px;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      margin: 5px 0 10px;
+      font-size: 30px;
+    }
+
+    p {
+      font-size: 17px;
+      line-height: 1.4;
+      margin: 10px 0 25px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 10px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #installBtn {
+      display: none;
+    }
+
+    #formBtn {
+      background: white;
+      color: #5b0b86;
+    }
+
+    #installBtn {
+      background: #f5c400;
+      color: #000;
+    }
+
+    #iosMessage {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      font-size: 14px;
+    }
   </style>
 </head>
+
 <body>
+
   <div class="box">
-    <img src="icon-512.png" alt="PLD-HM">
-    <p>Abriendo PLD-HM…</p>
+
+    <img src="./icon-512.png" alt="PLD-HM">
+
+    <h1>PLD-HM</h1>
+
+    <p>
+      Acceso al formulario de registro y actualización de información.
+    </p>
+
+    <button id="installBtn">
+      📲 Instalar PLD-HM
+    </button>
+
+    <button id="formBtn">
+      📝 Abrir formulario
+    </button>
+
+    <div id="iosMessage">
+      Para instalar PLD-HM en iPhone:
+      <br><br>
+      Pulsa <b>Compartir</b> y luego
+      <b>“Añadir a pantalla de inicio”</b>.
+    </div>
+
   </div>
-  <script>
-    const FORM_URL = "https://forms.gle/TrvjpJDbZHj51Xpy9";
-    setTimeout(() => { window.location.replace(FORM_URL); }, 400);
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js").catch(() => {});
+
+<script>
+
+  const FORM_URL = "https://forms.gle/TrvjpJDbZHj51Xpy9";
+
+  const installBtn = document.getElementById("installBtn");
+  const formBtn = document.getElementById("formBtn");
+  const iosMessage = document.getElementById("iosMessage");
+
+  let deferredPrompt = null;
+
+  /* Abrir formulario */
+  formBtn.addEventListener("click", function () {
+    window.location.href = FORM_URL;
+  });
+
+  /* Detectar instalación PWA en Android/Chrome */
+  window.addEventListener("beforeinstallprompt", function (event) {
+
+    event.preventDefault();
+
+    deferredPrompt = event;
+
+    installBtn.style.display = "block";
+
+  });
+
+  /* Botón instalar */
+  installBtn.addEventListener("click", async function () {
+
+    if (!deferredPrompt) {
+      return;
     }
-  </script>
+
+    deferredPrompt.prompt();
+
+    const result = await deferredPrompt.userChoice;
+
+    deferredPrompt = null;
+
+    installBtn.style.display = "none";
+
+  });
+
+  /* Detectar iPhone/iPad */
+  const isIOS =
+    /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+
+  const isStandalone =
+    window.navigator.standalone === true;
+
+  if (isIOS && !isStandalone) {
+    iosMessage.style.display = "block";
+  }
+
+  /* Registrar Service Worker */
+  if ("serviceWorker" in navigator) {
+
+    window.addEventListener("load", function () {
+
+      navigator.serviceWorker
+        .register("./sw.js")
+        .catch(function () {});
+
+    });
+
+  }
+
+</script>
+
 </body>
 </html>
+```
